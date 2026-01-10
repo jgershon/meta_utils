@@ -1,0 +1,30 @@
+#include "gtest/gtest.h"
+
+import meta_utils;
+
+using namespace meta_utils;
+
+TEST(test_types, test_arithmetic_r)
+{
+    EXPECT_TRUE((arithmetic_r<float>));
+    EXPECT_FALSE((arithmetic_r<float *>));
+}
+
+TEST(test_types, test_same_cvref_r)
+{
+    EXPECT_TRUE((same_cvref_r<int const &, int>));
+    EXPECT_FALSE((same_cvref_r<int const &, float const &>));
+}
+
+TEST(test_types, test_strictly_derived_from_r)
+{
+    struct foo
+    {};
+    struct bar : foo
+    {};
+    struct baz
+    {};
+    EXPECT_TRUE((strictly_derived_from_r<bar, foo>));
+    EXPECT_FALSE((strictly_derived_from_r<foo, foo>));
+    EXPECT_FALSE((strictly_derived_from_r<baz, foo>));
+}

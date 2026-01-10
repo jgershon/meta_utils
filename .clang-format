@@ -1,0 +1,20 @@
+BasedOnStyle: LLVM
+IndentWidth: 4
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: true
+  AfterClass: true
+  AfterStruct: true
+  AfterEnum: true
+  AfterNamespace: false
+  AfterControlStatement: Always
+  BeforeElse: true
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+AlwaysBreakTemplateDeclarations: Yes
+AlwaysBreakAfterReturnType: All
+QualifierAlignment: Right
+SpaceAroundPointerQualifiers: Both
+PointerAlignment: Middle
+ReferenceAlignment: Middle
