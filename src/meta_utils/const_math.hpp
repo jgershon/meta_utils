@@ -1,5 +1,7 @@
 #pragma once
 
+#include "meta_utils/types.hpp"
+
 #include <concepts>
 #include <cstddef>
 #include <stdexcept>
@@ -8,12 +10,13 @@
 
 namespace meta_utils {
 
-template<typename T>
-concept arithmetic = std::is_arithmetic_v<T>;
-
 [[nodiscard]] inline constexpr auto
 floor_log2(std::unsigned_integral auto n)
 {
+    if (n == 0)
+    {
+        throw std::invalid_argument{"floor_log2() argument == 0."};
+    }
     auto result = decltype(n){0};
     while (n > 1)
     {
@@ -23,7 +26,7 @@ floor_log2(std::unsigned_integral auto n)
     return result; 
 }
 
-template<arithmetic Value, arithmetic Base>
+template<arithmetic_r Value, arithmetic_r Base>
 [[nodiscard]] inline constexpr auto
 floor_log(Value const & x, Base const & base)
 {
@@ -43,7 +46,7 @@ floor_log(Value const & x, Base const & base)
 }
 
 [[nodiscard]] inline constexpr auto
-pow(arithmetic auto const & base, std::unsigned_integral auto exponent)
+pow(arithmetic_r auto const & base, std::unsigned_integral auto exponent)
 {
     auto result = decltype(base){1};
     auto squares = base;

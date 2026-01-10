@@ -11,18 +11,36 @@ using namespace meta_utils;
 
 TEST(test_const_math, test_floor_log2)
 {
-    auto test_val = [] <size_t N> ()
+    for (auto x = size_t{0}; x < 1024; ++x)
     {
-        auto expected = floor(log2(N));
-        EXPECT_EQ((floor_log2<size_t, N>()), expected);
-        EXPECT_EQ((floor_log2(N)), expected);
+        EXPECT_EQ(floor_log2(x), std::floor(std::log2(x)));
     };
-    [&] <size_t... N> (std::index_sequence<N...>)
-    {
-        ((test_val.operator()<N + 1>()), ...);
-    } (std::make_index_sequence<1024>{});
-    EXPECT_THROW({touch(floor_log2(0));}, std::invalid_argument);
+    EXPECT_THROW({touch(floor_log2(size_t{0}));}, std::invalid_argument);
     EXPECT_THROW({touch(floor_log2(-1));}, std::invalid_argument);
+}
+
+TEST(test_const_math, test_floor_log)
+{
+    auto const x = int{12345};
+    auto const y = double{54321};
+    for (auto b = 0.5; b < 10; ++b)
+    {
+        EXPECT_EQ(floor_log(x, b), std::floor(std::log(x) / std::log(b)));
+        EXPECT_EQ(floor_log(y, b), std::floor(std::log(y) / std::log(b)));
+    }
+    EXPECT_THROW({touch(floor_log(0, 3));}, std::invalid_argument);
+    EXPECT_THROW({touch(floor_log(-1, 3));}, std::invalid_argument);
+}
+
+TEST(test_const_math, test_pow)
+{
+    auto const x = int{17};
+    auto const y = double{13};
+    for (auto p = size_t{0}; p < 5; ++p)
+    {
+        EXPECT_EQ(pow(x, p), std::pow(x, p));
+        EXPECT_EQ(pow(y, p), std::pow(y, p));
+    }
 }
 
 TEST(test_const_math, test_n_choose_k)
