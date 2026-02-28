@@ -1,8 +1,12 @@
 #include "gtest/gtest.h"
 
-#include <cstring>
-
 import meta_utils;
+
+#ifdef STL_MODULE
+import std;
+#else
+#include <cstring>
+#endif
 
 using namespace meta_utils;
 

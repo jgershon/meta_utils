@@ -1,8 +1,12 @@
 module;
 
+#ifdef STL_MODULE
+import std;
+#else
 #include <algorithm>
 #include <cstddef>
 #include <string_view>
+#endif
 
 export module meta_utils:fixed_string;
 

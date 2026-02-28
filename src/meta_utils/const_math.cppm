@@ -1,8 +1,12 @@
 module;
 
+#ifdef STL_MODULE
+import std;
+#else
 #include <concepts>
 #include <stdexcept>
 #include <type_traits>
+#endif
 
 export module meta_utils:const_math;
 

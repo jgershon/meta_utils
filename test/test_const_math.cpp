@@ -2,8 +2,12 @@
 
 import meta_utils;
 
+#ifdef STL_MODULE
+import std;
+#else
 #include <cmath>
 #include <utility>
+#endif
 
 using namespace meta_utils;
 

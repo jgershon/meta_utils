@@ -1,3 +1,11 @@
 #include "gtest/gtest.h"
 
-#include "meta_utils/for_constexpr.hpp"
+import meta_utils;
+
+#ifdef STL_MODULE
+import std;
+#else
+#include <algorithm>
+#endif
+
+using namespace meta_utils;
