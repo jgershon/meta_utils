@@ -4,6 +4,7 @@ module;
 import std;
 #else
 #include <concepts>
+#include <cstddef>
 #include <cstdint>
 #include <ratio>
 #include <tuple>
@@ -91,7 +92,7 @@ struct product_<std::tuple<T...>>
     static constexpr auto size = sizeof...(T);
 };
 
-template <size_t Len, typename Prod>
+template <std::size_t Len, typename Prod>
 struct head_
 {
     using type = product_<tuple::head<Len, typename Prod::factors>>;
@@ -103,7 +104,7 @@ struct head_<0, Prod>
     using type = unity;
 };
 
-template <size_t Len, typename Prod>
+template <std::size_t Len, typename Prod>
 struct tail_
 {
     using type = product_<tuple::tail<Len, typename Prod::factors>>;
@@ -133,16 +134,16 @@ export {
     };
 
     template <typename T, product_r Prod>
-    inline constexpr size_t index_of =
+    inline constexpr std::size_t index_of =
         tuple::index_of<base_of<T>, typename Prod::base_types>;
 
-    template <size_t Len, product_r Prod>
+    template <std::size_t Len, product_r Prod>
     using head = typename head_<Len, Prod>::type;
 
-    template <size_t Len, product_r Prod>
+    template <std::size_t Len, product_r Prod>
     using tail = typename tail_<Len, Prod>::type;
 
-    template <size_t I, product_r Prod>
+    template <std::size_t I, product_r Prod>
     using at = tuple::at<I, Prod>;
 
 } // export
@@ -226,7 +227,7 @@ template <product_r Prod, typename T1, typename... T2>
     requires(contains_r<Prod, T1>)
 struct multiply_<Prod, T1, T2...>
 {
-    static constexpr size_t index = index_of<T1, Prod>;
+    static constexpr std::size_t index = index_of<T1, Prod>;
     using type =
         typename multiply_<head<index, Prod>,
                            typename multiply_<at<index, Prod>, T1>::type,

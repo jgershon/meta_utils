@@ -7,7 +7,7 @@ import std;
 #include <type_traits>
 #endif
 
-export module meta_utils:types;
+export module meta_utils:concepts;
 
 export namespace meta_utils {
 
