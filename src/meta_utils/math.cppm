@@ -3,19 +3,64 @@ module;
 #ifdef STL_MODULE
 import std;
 #else
+#include <cmath>
 #include <concepts>
+#include <cstddef>
 #include <stdexcept>
 #include <type_traits>
 #endif
 
-export module meta_utils:const_math;
+export module meta_utils:math;
 
-import :types;
+import :concepts;
 
 export namespace meta_utils {
 
-[[nodiscard]] inline constexpr auto
-floor_log2(std::integral auto n)
+template <arithmetic_r T>
+[[nodiscard]] constexpr T
+floor(T value)
+{
+    if constexpr (std::integral<T>)
+    {
+        return value;
+    }
+    else
+    {
+        return std::floor(value);
+    }
+} // floor()
+
+template <arithmetic_r T>
+[[nodiscard]] constexpr T
+ceil(T value)
+{
+    if constexpr (std::integral<T>)
+    {
+        return value;
+    }
+    else
+    {
+        return std::ceil(value);
+    }
+} // floor()
+
+template <arithmetic_r T>
+[[nodiscard]] constexpr T
+round(T value)
+{
+    if constexpr (std::integral<T>)
+    {
+        return value;
+    }
+    else
+    {
+        return std::round(value);
+    }
+} // round()
+
+template <std::integral T>
+[[nodiscard]] constexpr T
+floor_log2(T n)
 {
     if (n <= 0) [[unlikely]]
     {
@@ -28,10 +73,10 @@ floor_log2(std::integral auto n)
         n = n >> 1;
     }
     return result;
-}
+} // floor_log2()
 
-[[nodiscard]] inline constexpr auto
-pow(arithmetic_r auto const & base, std::unsigned_integral auto exponent)
+[[nodiscard]] constexpr auto
+pow(arithmetic_r auto base, std::unsigned_integral auto exponent)
 {
     auto result = decltype(base){1};
     auto squares = base;
@@ -48,8 +93,8 @@ pow(arithmetic_r auto const & base, std::unsigned_integral auto exponent)
 }
 
 template <std::integral Int1, std::integral Int2>
-[[nodiscard]] inline constexpr auto
-n_choose_k(Int1 const & n, Int2 const & k)
+[[nodiscard]] constexpr auto
+n_choose_k(Int1 n, Int2 k)
 {
     using result_type = std::common_type_t<Int1, Int2>;
 
@@ -72,17 +117,17 @@ n_choose_k(Int1 const & n, Int2 const & k)
     return inner(n, k);
 }
 
-template <size_t N, size_t K>
+template <std::size_t N, std::size_t K>
     requires((K == 0) || (K == N))
-[[nodiscard]] inline consteval size_t
+[[nodiscard]] consteval std::size_t
 n_choose_k()
 {
-    return size_t{1};
+    return std::size_t{1};
 }
 
-template <size_t N, size_t K>
+template <std::size_t N, std::size_t K>
     requires((K > 0) && (K < N))
-[[nodiscard]] inline consteval size_t
+[[nodiscard]] consteval std::size_t
 n_choose_k()
 {
     return n_choose_k<N - 1, K - 1>() + n_choose_k<N - 1, K>();

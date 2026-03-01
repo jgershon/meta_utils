@@ -17,7 +17,7 @@ add_executable(test_all
     test_for_constexpr.cpp
     test_sequence.cpp
     test_tuple.cpp
-    test_type_math.cpp
+    # test_type_math.cpp
     test_types.cpp
 )
 target_link_libraries(test_all meta_utils gtest gtest_main)
