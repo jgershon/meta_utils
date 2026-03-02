@@ -16,32 +16,40 @@ import :concepts;
 
 namespace meta_utils::sequence {
 
-template <typename T, T... Vals>
-struct value_sequence_
-{
-    using value_type = T;
+export {
 
-    [[nodiscard]] static constexpr auto
-    size()
+    using std::integer_sequence;
+
+    using std::index_sequence;
+
+    template <typename T, T... Vals>
+    struct value_sequence
     {
-        return sizeof...(Vals);
-    }
-};
+        using value_type = T;
+
+        [[nodiscard]] static constexpr auto
+        size()
+        {
+            return sizeof...(Vals);
+        }
+    };
+
+} // export
 
 template <typename>
 struct to_value_sequence_
 {};
 
 template <typename T, T... Vals>
-struct to_value_sequence_<value_sequence_<T, Vals...>>
+struct to_value_sequence_<value_sequence<T, Vals...>>
 {
-    using type = value_sequence_<T, Vals...>;
+    using type = value_sequence<T, Vals...>;
 };
 
 template <typename T, T... Vals>
-struct to_value_sequence_<std::integer_sequence<T, Vals...>>
+struct to_value_sequence_<integer_sequence<T, Vals...>>
 {
-    using type = value_sequence_<T, Vals...>;
+    using type = value_sequence<T, Vals...>;
 };
 
 template <typename Seq>
@@ -50,13 +58,13 @@ using in_ = typename to_value_sequence_<Seq>::type;
 template <typename T, T... Vals>
 struct sequence_
 {
-    using type = value_sequence_<T, Vals...>;
+    using type = value_sequence<T, Vals...>;
 };
 
 template <std::integral Int, Int... I>
 struct sequence_<Int, I...>
 {
-    using type = std::integer_sequence<Int, I...>;
+    using type = integer_sequence<Int, I...>;
 };
 
 template <typename>
@@ -64,7 +72,7 @@ struct from_value_sequence_
 {};
 
 template <typename T, T... Vals>
-struct from_value_sequence_<value_sequence_<T, Vals...>>
+struct from_value_sequence_<value_sequence<T, Vals...>>
 {
     using type = sequence_<T, Vals...>::type;
 };
@@ -77,11 +85,11 @@ struct is_sequence_ : std::false_type
 {};
 
 template <typename T, T... Vals>
-struct is_sequence_<value_sequence_<T, Vals...>> : std::true_type
+struct is_sequence_<value_sequence<T, Vals...>> : std::true_type
 {};
 
 template <typename T, T... Vals>
-struct is_sequence_<std::integer_sequence<T, Vals...>> : std::true_type
+struct is_sequence_<integer_sequence<T, Vals...>> : std::true_type
 {};
 
 template <typename>
@@ -89,7 +97,7 @@ struct to_array_
 {};
 
 template <typename T, T... Vals>
-struct to_array_<value_sequence_<T, Vals...>>
+struct to_array_<value_sequence<T, Vals...>>
 {
     [[nodiscard]] static consteval std::array<T, sizeof...(Vals)>
     operator()()
@@ -103,9 +111,9 @@ struct from_array_
 {};
 
 template <typename T, T Array, std::size_t... I>
-struct from_array_<T, Array, std::index_sequence<I...>>
+struct from_array_<T, Array, index_sequence<I...>>
 {
-    using type = value_sequence_<typename T::value_type, Array[I]...>;
+    using type = value_sequence<typename T::value_type, Array[I]...>;
 };
 
 template <typename T, T Array>
@@ -221,14 +229,14 @@ struct cat_
 {};
 
 template <typename T, T... Vals>
-struct cat_<value_sequence_<T, Vals...>>
+struct cat_<value_sequence<T, Vals...>>
 {
-    using type = value_sequence_<T, Vals...>;
+    using type = value_sequence<T, Vals...>;
 };
 
 template <typename T, T... Vals1, T... Vals2, typename... Seqs>
-struct cat_<value_sequence_<T, Vals1...>, value_sequence_<T, Vals2...>, Seqs...>
-    : cat_<value_sequence_<T, Vals1..., Vals2...>, Seqs...>
+struct cat_<value_sequence<T, Vals1...>, value_sequence<T, Vals2...>, Seqs...>
+    : cat_<value_sequence<T, Vals1..., Vals2...>, Seqs...>
 {};
 
 template <typename, typename>
@@ -237,9 +245,9 @@ struct select_
 
 template <typename T, T... Vals, std::size_t... I>
     requires((I < sizeof...(Vals)) && ...)
-struct select_<value_sequence_<T, Vals...>, std::index_sequence<I...>>
+struct select_<value_sequence<T, Vals...>, index_sequence<I...>>
 {
-    using type = value_sequence_<T, Vals...[I]...>;
+    using type = value_sequence<T, Vals...[I]...>;
 };
 
 template <typename, std::size_t>
@@ -247,7 +255,7 @@ struct at_
 {};
 
 template <typename T, T... Vals, std::size_t I>
-struct at_<value_sequence_<T, Vals...>, I>
+struct at_<value_sequence<T, Vals...>, I>
 {
     static constexpr auto value = Vals...[I];
 };
@@ -255,7 +263,7 @@ struct at_<value_sequence_<T, Vals...>, I>
 template <typename T, T, T, T>
 struct make_sequence_
 {
-    using type = value_sequence_<T>;
+    using type = value_sequence<T>;
 };
 
 template <typename T, T Begin, T End, T Step>

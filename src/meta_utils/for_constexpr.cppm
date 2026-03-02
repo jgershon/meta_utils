@@ -16,9 +16,34 @@ export namespace meta_utils {
 
 template <typename T, T... Vals>
 constexpr void
-for_constexpr(sequence::sequence<T, Vals...>, auto && body)
+for_constexpr(sequence::value_sequence<T, Vals...>, auto && body)
 {
-    ((body.template operator()<Vals>()), ...);
+    if constexpr (requires {
+                      { (body(Vals), ...) };
+                  })
+    {
+        (body(Vals), ...);
+    }
+    else
+    {
+        ((body.template operator()<Vals>()), ...);
+    }
+}
+
+template <typename T, T... Vals>
+constexpr void
+for_constexpr(sequence::integer_sequence<T, Vals...>, auto && body)
+{
+    if constexpr (requires {
+                      { (body(Vals), ...) };
+                  })
+    {
+        (body(Vals), ...);
+    }
+    else
+    {
+        ((body.template operator()<Vals>()), ...);
+    }
 }
 
 template <arithmetic_r T, T Begin, T End, T Step = 1, typename Body>
@@ -33,24 +58,17 @@ template <tuple::tuple_r Tuple, typename Body>
 constexpr void
 for_constexpr(Body && body)
 {
-    for_constexpr<0, tuple::size<Tuple>>(
+    for_constexpr<std::size_t, 0, tuple::size<Tuple>>(
         [body = std::forward<Body>(body)]<std::size_t I> {
             body.template operator()<tuple::at<I, Tuple>>();
         });
-}
-
-template <typename T, T... Vals>
-constexpr void
-for_each(sequence::sequence<T, Vals...>, auto && body)
-{
-    ((body(Vals)), ...);
 }
 
 template <tuple::tuple_r Tuple, typename Body>
 constexpr void
 for_each(Tuple && values, Body && body)
 {
-    for_constexpr<std::size_t, 0, size(values)>(
+    for_constexpr<std::size_t, 0, tuple::size<Tuple>>(
         [values = std::forward<Tuple>(values),
          body = std::forward<Body>(body)]<std::size_t I> {
             body(tuple::get<I>(values));
