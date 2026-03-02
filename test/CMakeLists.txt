@@ -13,12 +13,15 @@ FetchContent_MakeAvailable(googletest)
 add_executable(test_all
     test_all.cpp
     test_concepts.cpp
-    # test_const_math.cpp
+    test_math.cpp
     test_fixed_string.cpp
     test_for_constexpr.cpp
+    test_overload.cpp
     test_sequence.cpp
+    test_trait.cpp
     test_tuple.cpp
     # test_type_math.cpp
+    test_variant.cpp
 )
 target_link_libraries(test_all meta_utils gtest gtest_main)
 gtest_discover_tests(test_all)

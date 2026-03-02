@@ -11,7 +11,7 @@ import std;
 
 using namespace meta_utils;
 
-TEST(test_const_math, test_floor_log2)
+TEST(test_math, test_floor_log2)
 {
     for (auto x = size_t{1}; x < 1024; ++x)
     {
@@ -22,7 +22,7 @@ TEST(test_const_math, test_floor_log2)
         std::invalid_argument);
 }
 
-TEST(test_const_math, test_pow)
+TEST(test_math, test_pow)
 {
     auto const x = int{17};
     auto const y = double{13};
@@ -33,7 +33,7 @@ TEST(test_const_math, test_pow)
     }
 }
 
-TEST(test_const_math, test_n_choose_k)
+TEST(test_math, test_n_choose_k)
 {
     auto test_pair = []<size_t N, size_t K>() {
         auto expected = tgamma(N + 1) / tgamma(K + 1) / tgamma(N - K + 1);
