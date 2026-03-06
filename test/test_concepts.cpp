@@ -4,19 +4,19 @@ import meta_utils;
 
 using namespace meta_utils;
 
-TEST(test_concepts, test_arithmetic_r)
+TEST(concepts, arithmetic_r)
 {
     EXPECT_TRUE((arithmetic_r<float>));
     EXPECT_FALSE((arithmetic_r<float *>));
 }
 
-TEST(test_concepts, test_same_cvref_r)
+TEST(concepts, same_cvref_r)
 {
     EXPECT_TRUE((same_cvref_r<int const &, int>));
     EXPECT_FALSE((same_cvref_r<int const &, float const &>));
 }
 
-TEST(test_concepts, test_strictly_derived_from_r)
+TEST(concepts, strictly_derived_from_r)
 {
     struct foo
     {};

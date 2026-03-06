@@ -6,17 +6,17 @@ import std;
 #include <concepts>
 #endif
 
-export module meta_utils:trait;
+export module meta_utils:meta_func;
 
 import :concepts;
 
-export namespace meta_utils::trait {
+export namespace meta_utils {
 
 template <typename T>
 concept alias_r = requires { typename T::type; };
 
 template <typename T, typename Value>
-concept value_r = requires {
+concept constant_r = requires {
     { T::value } -> std::convertible_to<Value>;
 };
 
@@ -31,6 +31,42 @@ concept function_r = requires {
 template <typename T, typename... Args>
 concept predicate_r = requires {
     { T::template operator()<Args...>() } -> same_cvref_r<bool>;
+};
+
+template <typename T, typename... Args>
+[[nodiscard]] consteval auto
+invoke()
+{
+    return T::template operator()<Args...>();
+}
+
+template <template <typename...> typename Map>
+struct make_map
+{
+    template <typename... T>
+    using type = typename Map<T...>::type;
+};
+
+template <template <typename...> typename Func>
+struct make_function
+{
+    template <typename... T>
+    [[nodiscard]] static consteval auto
+    operator()()
+    {
+        return Func<T...>::value;
+    }
+};
+
+template <typename Target>
+struct is_a
+{
+    template <typename T>
+    [[nodiscard]] static consteval bool
+    operator()()
+    {
+        return std::same_as<T, Target>;
+    }
 };
 
 template <typename Pred>
@@ -54,7 +90,7 @@ struct all
         auto eval_one = []<typename Pred> -> bool {
             return Pred::template operator()<T...>();
         };
-        return (eval_one.template operator()<Preds>() && ... && true);
+        return ((eval_one.template operator()<Preds>()) && ... && true);
     }
 };
 
@@ -68,8 +104,8 @@ struct any
         auto eval_one = []<typename Pred> -> bool {
             return Pred::template operator()<T...>();
         };
-        return (eval_one.template operator()<Preds>() || ... || false);
+        return ((eval_one.template operator()<Preds>()) || ... || false);
     }
 };
 
-} // namespace meta_utils::trait
+} // namespace meta_utils
